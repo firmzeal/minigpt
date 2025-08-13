@@ -1,0 +1,10 @@
+{
+  // Friendly name that shows up inside Codespaces
+  "name": "Python",
+
+  // Official dev-container image that already has Python, pip, venv, etc.
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  // (Optional) Run once after the container is built
+  "postCreateCommand": "python --version"
+}
