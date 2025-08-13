@@ -1,4 +1,3 @@
-
 from langchain_azure_ai.chat_models import AzureAIChatCompletionsModel
 import streamlit as st
 import os
@@ -7,11 +6,13 @@ from dotenv import load_dotenv
 # Load token from .env if available
 load_dotenv()
 
-st.title("Mini-ChatGPT with Memory")
+st.title("Oluwafemi's-Mini-ChatGPT with Memory🧠")
 
-# Initialize session state for chat history
+# Initialize session state
 if "history" not in st.session_state:
     st.session_state.history = []
+if "current_input" not in st.session_state:
+    st.session_state.current_input = ""  # Store current text area input
 
 def generate_response(user_input):
     credential = os.environ.get("GITHUB_TOKEN")
@@ -38,10 +39,14 @@ def generate_response(user_input):
 
 # Chat UI
 with st.form("chat_interface"):
-    text = st.text_area("Enter your message:")
+    st.session_state.current_input = st.text_area(
+        "Enter your message:",
+        value=st.session_state.current_input
+    )
     submitted = st.form_submit_button("Submit")
-    if submitted and text.strip():
-        generate_response(text)
+    if submitted and st.session_state.current_input.strip():
+        generate_response(st.session_state.current_input)
+        # DO NOT reset st.session_state.current_input here
 
 # Display chat history
 if st.session_state.history:
@@ -49,6 +54,7 @@ if st.session_state.history:
     for user_msg, bot_msg in st.session_state.history:
         st.write(f"**You:** {user_msg}")
         st.write(f"**Bot:** {bot_msg}")
+
 # Clear chat history button
 if st.button("Clear Chat History"):
     st.session_state.history = []
@@ -57,5 +63,5 @@ if st.button("Clear Chat History"):
 
 # Footer
 st.markdown("---")
-st.markdown("Made with ❤️ by fm")
+st.markdown("Made with ❤️ by Oluwafemi")
 st.markdown("Powered by [Azure AI](https://azure.microsoft.com/en-us/services/cognitive-services/azure-openai-service/) and [Streamlit](https://streamlit.io/).")
