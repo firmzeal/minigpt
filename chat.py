@@ -6,13 +6,12 @@ from dotenv import load_dotenv
 # Load token from .env if available
 load_dotenv()
 
-st.title("Oluwafemi's-Mini-ChatGPT with Memory🧠")
+st.set_page_config(page_title="Mini Chat", page_icon="💬")
+st.title("💬 Mini-ChatGPT with Memory")
 
-# Initialize session state
+# Initialize chat history
 if "history" not in st.session_state:
     st.session_state.history = []
-if "current_input" not in st.session_state:
-    st.session_state.current_input = ""  # Store current text area input
 
 def generate_response(user_input):
     credential = os.environ.get("GITHUB_TOKEN")
@@ -35,33 +34,20 @@ def generate_response(user_input):
 
     # Save to history
     st.session_state.history.append((user_input, bot_reply))
-    st.info(bot_reply)
 
-# Chat UI
-with st.form("chat_interface"):
-    st.session_state.current_input = st.text_area(
-        "Enter your message:",
-        value=st.session_state.current_input
-    )
-    submitted = st.form_submit_button("Submit")
-    if submitted and st.session_state.current_input.strip():
-        generate_response(st.session_state.current_input)
-        # DO NOT reset st.session_state.current_input here
+# Display chat messages
+for user_msg, bot_msg in st.session_state.history:
+    with st.chat_message("user"):
+        st.markdown(user_msg)
+    with st.chat_message("assistant"):
+        st.markdown(bot_msg)
 
-# Display chat history
-if st.session_state.history:
-    st.subheader("Conversation history")
-    for user_msg, bot_msg in st.session_state.history:
-        st.write(f"**You:** {user_msg}")
-        st.write(f"**Bot:** {bot_msg}")
-
-# Clear chat history button
-if st.button("Clear Chat History"):
-    st.session_state.history = []
-    st.success("Chat history cleared.")
-    st.rerun()
-
-# Footer
-st.markdown("---")
-st.markdown("Made with ❤️ by Oluwafemi")
-st.markdown("Powered by [Azure AI](https://azure.microsoft.com/en-us/services/cognitive-services/azure-openai-service/) and [Streamlit](https://streamlit.io/).")
+# Chat input
+if prompt := st.chat_input("Type your message..."):
+    # Show user message immediately
+    with st.chat_message("user"):
+        st.markdown(prompt)
+    generate_response(prompt)
+    # Show bot reply
+    with st.chat_message("assistant"):
+        st.markdown(st.session_state.history[-1][1])
