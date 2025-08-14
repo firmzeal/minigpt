@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 st.set_page_config(page_title="Mini Chat", page_icon="💬")
-st.title("💬 Mini-ChatGPT with Memory")
+st.title("💬 Mini-ChatGPT with Memory By Firmzeal")
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -40,7 +40,7 @@ if prompt := st.chat_input("Type your message..."):
 
     with st.chat_message("assistant"):
         placeholder = st.empty()
-        placeholder.markdown("_Thinking..._")
+        placeholder.markdown("Thinking...")
         bot_reply = generate_response(prompt)
 
         if bot_reply:
